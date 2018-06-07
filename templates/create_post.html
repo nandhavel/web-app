@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Twitt post</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.897843317">
+</head>
+<body>
+
+<div>
+    <form name="twitt_form" action={{url_for('home_display', key=key)}} method="post">
+        <fieldset>
+            <b style="font-size:124%";>TITLE:</b><hr> <br>
+        <textarea rows="1" cols="20" name="your_title" id='your_title' value="{{request.form.your_title}}" required></textarea> <br><br>
+            <b style="font-size:124%";>WRITE YOUR POST:</b><hr> <br>
+            <textarea name="title" id='title' value="{{request.form.title}}" required></textarea> <br><br>
+        </fieldset><br>
+        <button type="submit" class="button"><b style="font-size:124%";>POST</b></button>
+    </form> <br><br><br><br>
+</div>
+
+
+
+
+<fieldset>
+    <div id = "lower_part">
+        <b style="font-size:124%";>RECENTPOST:</b> <br><hr><br>
+        <textarea rows="1" cols="20" name="Recent_post" id="my_post" disabled>{{list}}
+        </textarea><br><br>
+        <button class="delete_button"><b style="font-size:124%";>Delete</b></button>
+
+
+
+    </div>
+</fieldset>
+
+</body>
+
+
+</html>

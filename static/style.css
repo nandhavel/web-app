@@ -1,0 +1,85 @@
+#title {
+    width: 65%;
+    height: 160px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 8px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
+}
+
+.button {
+  display: inline-block;
+  padding: 15px 25px;
+  font-size: 19px;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  color: #f8f8f8;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 18px;
+  box-shadow: 0 6px #999;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
+
+
+#my_post {
+
+    width: 65%;
+    height: 160px;
+    padding: 12px 20px;
+    box-sizing: border-box;
+    border: 8px solid #ccc;
+    border-radius: 4px;
+    background-color: #f8f8f8;
+    font-size: 16px;
+    resize: none;
+
+
+    }
+
+
+
+
+
+.delete_button {
+
+  background-color: #f4511e;
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  text-align: center;
+  font-size: 16px;
+  margin: 4px 2px;
+  opacity: 0.6;
+  transition: 0.3s;
+  display: inline-block;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.delete_button:hover {opacity: 1}
+
+
+body{
+    background-image: url('');
+}
+
+textarea{
+    border:solid 3px midnightblue;
+}
+
+fieldset{
+    background-color:#7ccd5a8a;
+}

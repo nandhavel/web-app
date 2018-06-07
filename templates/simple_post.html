@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> Twitt post</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.8483317">
+</head>
+<body>
+
+<div>
+    <form name="twitt_form" action={{url_for("posting_messsage")}} method="POST">
+
+        <b style="font-size:124%";>TITLE</b><hr> <br>
+    <textarea rows="1" cols="20" name="your_title" id='your_title' value="" required></textarea> <br><br>
+        <b style="font-size:124%";>WRITE YOUR POST</b><hr> <br>
+        <textarea name="title" id='title' value="" required></textarea> <br><br>
+    <br>
+    <button type="submit" class="button"><b style="font-size:124%";>POST</b></button>
+    </form> <br><br><br><br>
+</div>
+
+
+
+
+
+    <div id = "lower_part">
+        <b style="font-size:124%";>RECENTPOST</b> <br><hr>
+        <br>
+
+        {% for post in retrieved_post: %}
+        <ul><b>Title and Post</b>
+            <li>{{post.Title}}</li>
+            <li>{{post.MyPost}}</li>
+        </ul>
+        {% endfor %}
+            <br><br>
+        <button class="delete_button"><b style="font-size:124%";>Delete</b></button>
+
+
+
+    </div>
+
+</body>
+
+
+</html>

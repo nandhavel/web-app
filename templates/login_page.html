@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>loginform</title>
+    <link rel ="stylesheet" type="text/css" href="/static/login_pagestyle.css?v=1.47487832">
+</head>
+<body>
+<div class="form_area">
+    <h3>Login Form</h3>
+    <form action= {{url_for('register')}} method = "POST">
+        <p>Email</p>
+        <input type="email" name="user_email" id="user_email" placeholder="enter your email">
+        <p>Password</p>
+        <input type="password" name="user_password" id="user_password" placeholder="enter your password">
+        <p>Security Question</p>
+        <select name="user_choice" id="select_options">
+            <option value=""> what is your mother's name?
+            </option>
+            <option value=""> what is your First pet name?
+            </option>
+            <option value=""> what is your First school name?
+            </option>
+            <option value=""> what is your name of your maternal uncle?
+            </option>
+        </select>
+        <p></p>
+        <input type="text" name="check_user" id="security_code" placeholder="your answer here">
+        <input type="submit" value="Sign In">
+        <a href="">Forget Password?</a>
+        <a href="" id="register" style="float: right">Register</a>
+    </form>
+</div>
+
+</body>
+</html>

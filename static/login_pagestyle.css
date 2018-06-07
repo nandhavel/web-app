@@ -1,0 +1,104 @@
+body {
+
+margin: 0;
+padding:0;
+background-image: url("/static/images/myforest.jpg");
+-webkit-background-size: cover;
+background-size: cover;
+font-family: Tahoma, sans-serif;
+
+}
+
+.form_area {
+
+position: absolute;
+top: 50%;
+left: 50%;
+transform: translate(-50%,-50%);
+width: 400px;
+height: 500px;
+box-sizing: border-box;
+background: rgba(0,0,0,0.5);
+padding: 40px;
+
+}
+
+h3 {
+
+margin: 0;
+padding: 0 0 20px;
+font-weight: bold;
+color: #FFFFFF;
+
+
+
+}
+
+.form_area p{
+
+margin: 0;
+padding: 0;
+font-weight: bold;
+color: #FFFFFF;
+
+}
+
+.form_area input, select{
+
+margin-bottom: 20px;
+width: 100%;
+
+}
+
+
+.form_area input[type=email],
+.form_area input[type=password]{
+
+border:none;
+border-bottom: 1px solid #FFFFFF;
+background-color: transparent;
+outline: none;
+height: 40px;
+color: #FFFFFF;
+display: 16px;
+}
+
+::placeholder{
+color: #FFFFFF;
+
+}
+
+.form_area select{
+margin-top: 20px;
+padding: 10px 0;
+
+}
+
+.form_area input[type=submit]
+{
+border: none;
+height: 40px;
+outline: none;
+color: #FFFFFF;
+font-size: 15px;
+background-color: tomato;
+cursor: pointer;
+border-radius: 20px;
+
+}
+
+.form_area input[type=submit]:hover{
+
+background-color: cyan;
+color: #FFFFFF;
+
+}
+
+.form_area a{
+
+color: #FFFFFF;
+text-decoration: none;
+font-size: 14px;
+font-weight: bold;
+}
+

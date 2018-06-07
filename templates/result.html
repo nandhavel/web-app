@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>combining dict1</title>
+</head>
+<body>
+
+
+<table  border =15>
+    {% for key, value in result.iteritems() %}
+        <tr>
+            <th> {{ key }} </th>
+            <td> {{ value }}</td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+</html>
