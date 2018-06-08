@@ -8,7 +8,7 @@
 <body>
 <div class="form_area">
     <h3>Login Form</h3>
-    <form action= {{url_for('register')}} method = "POST">
+    <form id="loginform" class="form loginform" action={{url_for("validate_user")}} method = "POST">
         <p>Email</p>
         <input type="email" name="user_email" id="user_email" placeholder="enter your email">
         <p>Password</p>
@@ -28,7 +28,7 @@
         <input type="text" name="check_user" id="security_code" placeholder="your answer here">
         <input type="submit" value="Sign In">
         <a href="">Forget Password?</a>
-        <a href="" id="register" style="float: right">Register</a>
+        <a href="http://localhost:8080/register" id="register" style="float: right">Register</a>
     </form>
 </div>
 
