@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <title> Twitt post</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.8483317">
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.869888
+    8617">
 </head>
 <body>
 
 <div>
-    <form name="twitt_form" action={{url_for("posting_messsage")}} method="POST">
+    <form name="twitt_form" action={{url_for("posting_messsage", email=email)}} method="POST">
 
         <b style="font-size:124%";>TITLE</b><hr> <br>
     <textarea rows="1" cols="20" name="your_title" id='your_title' value="" required></textarea> <br><br>
@@ -35,12 +36,20 @@
         {% endfor %}
             <br><br>
         <button class="delete_button"><b style="font-size:124%";>Delete</b></button>
-
+        <form action={{url_for("logout")}} method="post">
+            <input type="submit" name="logout" class="logout_button" id="logout" value="Logout"> <b style="font-size:124%";></b> </input>
+        </form>
 
 
     </div>
 
 </body>
-
+<script>
+    $(document).ready(function(){
+        $.get("/Getting_message/{{email}}", function(data, status){
+            console.log("The retrieved posts are: ", data);
+        });
+    });
+</script>
 
 </html>

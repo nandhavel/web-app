@@ -83,3 +83,9 @@ textarea{
 fieldset{
     background-color:#7ccd5a8a;
 }
+
+.logout_button {
+   position:absolute;
+   top:0;
+   right:0;
+  }
