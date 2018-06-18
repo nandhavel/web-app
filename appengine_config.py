@@ -1,6 +1,8 @@
 import os
 import sys
 
+SECRET_KEY = "Your_secret_string"
+
 if os.environ.get('SERVER_SOFTWARE', '').startswith('Google App Engine'):
     sys.path.insert(0, 'lib.zip')
 else:

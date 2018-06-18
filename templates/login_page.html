@@ -6,6 +6,7 @@
     <link rel ="stylesheet" type="text/css" href="/static/login_pagestyle.css?v=1.47487832">
 </head>
 <body>
+
 <div class="form_area">
     <h3>Login Form</h3>
     <form id="loginform" class="form loginform" action={{url_for("validate_user")}} method = "POST">
@@ -31,6 +32,6 @@
         <a href="http://localhost:8080/register" id="register" style="float: right">Register</a>
     </form>
 </div>
-
+    <p>{{error}}</p>
 </body>
 </html>

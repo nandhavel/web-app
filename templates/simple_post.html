@@ -3,45 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <title> Twitt post</title>
-    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.869888
-    8617">
+    <script src="/static/dialog.js"></script>
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.869897617">
 </head>
 <body>
 
 <div>
     <form name="twitt_form" action={{url_for("posting_messsage", email=email)}} method="POST">
 
-        <b style="font-size:124%";>TITLE</b><hr> <br>
-    <textarea rows="1" cols="20" name="your_title" id='your_title' value="" required></textarea> <br><br>
-        <b style="font-size:124%";>WRITE YOUR POST</b><hr> <br>
+        <b style="font-size:124%" ;>TITLE</b>
+        <hr>
+        <br>
+        <textarea rows="1" cols="20" name="your_title" id='your_title' value="" required></textarea> <br><br>
+        <b style="font-size:124%" ;>WRITE YOUR POST</b>
+        <hr>
+        <br>
         <textarea name="title" id='title' value="" required></textarea> <br><br>
-    <br>
-    <button type="submit" class="button"><b style="font-size:124%";>POST</b></button>
-    </form> <br><br><br><br>
+        <br>
+        <button type="submit" class="button"><b style="font-size:124%" ;>POST</b></button>
+    </form>
+    <br><br><br><br>
+</div>
+
+<div id="dialogoverlay"></div>
+<div id="dialogbox">
+  <div>
+    <div id="dialogboxhead"></div>
+    <div id="dialogboxbody"></div>
+    <div id="dialogboxfoot"></div>
+  </div>
 </div>
 
 
 
+<script>
+{% if session_list > 1 %}
+    Alert.render('Your account has been logged in {{session_list}} different places')
+{% endif %}
+
+</script>
+
+<div id="lower_part">
+    <b style="font-size:124%" ;>RECENTPOST</b> <br>
+    <hr>
+    <br>
+
+    {% for post in retrieved_post: %}
+    <ul><b>Title and Post</b>
+        <li>{{post.Title}}</li>
+        <li>{{post.MyPost}}</li>
+    </ul>
+    {% endfor %}
+    <br><br>
+    <button class="delete_button"><b style="font-size:124%" ;>Delete</b></button>
+    <form action={{url_for("logout")}} method="post">
+        <input type="submit" name="logout" class="logout_button" id="logout" value="Logout"> <b style="font-size:124%" ;></b> </input>
+
+    </form>
 
 
-    <div id = "lower_part">
-        <b style="font-size:124%";>RECENTPOST</b> <br><hr>
-        <br>
-
-        {% for post in retrieved_post: %}
-        <ul><b>Title and Post</b>
-            <li>{{post.Title}}</li>
-            <li>{{post.MyPost}}</li>
-        </ul>
-        {% endfor %}
-            <br><br>
-        <button class="delete_button"><b style="font-size:124%";>Delete</b></button>
-        <form action={{url_for("logout")}} method="post">
-            <input type="submit" name="logout" class="logout_button" id="logout" value="Logout"> <b style="font-size:124%";></b> </input>
-        </form>
+</div>
 
 
-    </div>
+
 
 </body>
 <script>
@@ -50,6 +74,10 @@
             console.log("The retrieved posts are: ", data);
         });
     });
+
 </script>
+
+
+
 
 </html>

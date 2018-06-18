@@ -15,3 +15,8 @@ indexes:
   - name: EmailID
   - name: Timestamp
     direction: desc
+
+- kind: SessionDb
+  properties:
+  - name: User_Email
+  - name: session_ID
