@@ -4,16 +4,25 @@
     <meta charset="UTF-8">
     <title> Twitt post</title>
     <script src="/static/dialog.js"></script>
-    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.869897617">
+    <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.88817">
 </head>
 <body>
 
-<div>
+<div class="row">
+  <div class="column left" style="background-color:#aaa;">
+    <div>
     <form name="twitt_form" action={{url_for("posting_messsage", email=email)}} method="POST">
 
         <b style="font-size:124%" ;>TITLE</b>
         <hr>
         <br>
+        <div class="dropdown" style="float:right;">
+            <button class="dropbtn">Security</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="load_session()">Sessions</a>
+            </div>
+        </div>
+
         <textarea rows="1" cols="20" name="your_title" id='your_title' value="" required></textarea> <br><br>
         <b style="font-size:124%" ;>WRITE YOUR POST</b>
         <hr>
@@ -25,23 +34,7 @@
     <br><br><br><br>
 </div>
 
-<div id="dialogoverlay"></div>
-<div id="dialogbox">
-  <div>
-    <div id="dialogboxhead"></div>
-    <div id="dialogboxbody"></div>
-    <div id="dialogboxfoot"></div>
-  </div>
-</div>
 
-
-
-<script>
-{% if session_list > 1 %}
-    Alert.render('Your account has been logged in {{session_list}} different places')
-{% endif %}
-
-</script>
 
 <div id="lower_part">
     <b style="font-size:124%" ;>RECENTPOST</b> <br>
@@ -60,22 +53,48 @@
         <input type="submit" name="logout" class="logout_button" id="logout" value="Logout"> <b style="font-size:124%" ;></b> </input>
 
     </form>
+</div>
+
+  </div>
 
 
+
+  <div class="column right" id="display_session" style="background-color:#bbb;">
+
+  </div>
 </div>
 
 
 
 
-</body>
-<script>
-    $(document).ready(function(){
-        $.get("/Getting_message/{{email}}", function(data, status){
-            console.log("The retrieved posts are: ", data);
-        });
-    });
 
-</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+<!--<script>-->
+    <!--$(document).ready(function(){-->
+        <!--$.get("/Getting_message/{{email}}", function(data, status){-->
+            <!--console.log("The retrieved posts are: ", data);-->
+        <!--});-->
+    <!--});-->
+
+<!--</script>-->
 
 
 

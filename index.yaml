@@ -16,6 +16,12 @@ indexes:
   - name: Timestamp
     direction: desc
 
+- kind: MessagePost
+  properties:
+  - name: user_email_id
+  - name: Timestamp
+    direction: desc
+
 - kind: SessionDb
   properties:
   - name: User_Email
