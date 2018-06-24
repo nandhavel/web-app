@@ -3,7 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <title> Twitt post</title>
-    <script src="/static/dialog.js"></script>
+    <!--<script src="/static/dialog.js"></script>-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function(){
+        var str = '';
+        $("#session_button").click(function(){
+            $.ajax({
+                url: "/active_session",
+                type: "GET",
+                dataType: "json",
+                success: function(data) {
+
+                    $(data).each(function(index, value){
+                        str = ' ';
+                        str +=
+                      ("browser:"+" " + value.browser + "<br>"+
+                        "IP: " + " " + value.ip_address + "<br>"+
+                        "sign_in_time: " + " " + value.sign_in_time + "<br><br>");
+
+                         console.log(str);
+                         console.log(value.id)
+
+                         my_button = $('<button/>',
+                         { text:"revoke",
+                         id: 'btn_'+index,
+                         onclick: "post_fun('"+value.id+ "', 'div"+ index +"')"
+
+                         });
+                         my_div = $('<div id="div'+ index +'" />');
+                         console.log(my_div);
+                         my_div.append(str);
+                         my_div.append(my_button)
+                         $('#display_session').append(my_div);
+                    });
+                }
+            });
+        });
+    });
+    function post_fun(id_parameter, my_div)
+    {
+        console.log(id_parameter)
+        $.ajax({
+            type: "POST",
+            url: "/revoke",
+            data: JSON.stringify({
+                    id_param: id_parameter
+                }),
+            contentType: 'application/json;charset=UTF-8',
+            success: function()
+            {
+                console.log(my_div);
+                $("#"+ my_div).remove();
+            }
+        });
+    }
+    </script>
     <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.88817">
 </head>
 <body>
@@ -19,7 +74,8 @@
         <div class="dropdown" style="float:right;">
             <button class="dropbtn">Security</button>
             <div class="dropdown-content">
-                <a href="#" onclick="load_session()">Sessions</a>
+                <!--<a href="#" onclick="load_session()">Sessions</a>-->
+                <a href="#" id="session_button">Sessions</a>
             </div>
         </div>
 

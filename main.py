@@ -86,7 +86,8 @@ def session_track():
 def revoke_other_session():
     if request.method == "POST":
         if "user" in session:
-            other_session_id = request.form.get("session_id")
+            other_session_id = request.json["id_param"]
+
             delete_session = SessionDb.query().filter(SessionDb.session_ID == other_session_id).get()
             delete_session.key.delete()
         return "other session deleted"
