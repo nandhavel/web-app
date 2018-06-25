@@ -7,22 +7,22 @@ app.secret_key = '\x00(\x86N\x86D\xb4S|\xe3\xc0"\x15\xc9v\xd2c\xda7\xa8\xea\xaaD
 
 
 class Registration(ndb.Model):
-    Name = ndb.StringProperty(required=True)
-    Email = ndb.StringProperty(required=True)
-    Password = ndb.StringProperty(required=True)
+    name = ndb.StringProperty(required=True)
+    email = ndb.StringProperty(required=True)
+    password = ndb.StringProperty(required=True)
 
 
 class MessagePost(ndb.Model):
-    Title = ndb.StringProperty(required=True)
-    MyPost = ndb.StringProperty(required=True)
-    Timestamp = ndb.DateTimeProperty(auto_now_add=True)
-    EmailID = ndb.StringProperty(required=True)
+    title = ndb.StringProperty(required=True)
+    my_post = ndb.StringProperty(required=True)
+    timestamp = ndb.DateTimeProperty(auto_now_add=True)
+    email_id = ndb.StringProperty(required=True)
 
 
 class SessionDb(ndb.Model):
-    session_ID = ndb.StringProperty(required=True)
+    user_session_id = ndb.StringProperty(required=True)
     user_email = ndb.StringProperty(required=True)
-    Login_time = ndb.DateTimeProperty(auto_now=True)
+    login_time = ndb.DateTimeProperty(auto_now=True)
     ip_address = ndb.StringProperty(required=True)
     browser = ndb.StringProperty(required=True)
 
@@ -31,7 +31,7 @@ def user_session_authenticate():
     if "user" not in session:
         return False
     user_session_id = session["user"]
-    session_exist = SessionDb.query().filter(SessionDb.session_ID == user_session_id).get()
+    session_exist = SessionDb.query().filter(SessionDb.user_session_id == user_session_id).get()
     if session_exist:
         return True
     return False
@@ -46,66 +46,66 @@ def posting_messsage(email):
         if not is_valid_session:
             return redirect(url_for('logout'))
 
-        MessagePost(Title=title, MyPost=mypost, EmailID=email).put()
+        MessagePost(title=title, my_post=mypost, email_id=email).put()
     return redirect(url_for("getting_message", email=email))
 
 
 @app.route("/Getting_message/<email>")
 def getting_message(email):
     time.sleep(1)
-    retrieved_post = MessagePost.query(MessagePost.EmailID == email).order(-MessagePost.Timestamp)
+    retrieved_post = MessagePost.query(MessagePost.email_id == email).order(-MessagePost.timestamp)
     return render_template("simple_post.html", retrieved_post=retrieved_post)
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/users/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         name = request.form["user_name"]
         email = request.form["user_email"]
         password = request.form["user_password"]
-        user_key = Registration(Name=name, Email=email, Password=password).put()
+        user_key = Registration(name=name, email=email, password=password).put()
         return render_template("login_page.html")
     return render_template("Registration_form.html")
 
 
-@app.route("/active_session")
+@app.route("/users/active_session")
 def session_track():
     my_id = session.get('user')
-    my_email = SessionDb.query().filter(SessionDb.session_ID == my_id).get().user_email
+    my_email = SessionDb.query().filter(SessionDb.user_session_id == my_id).get().user_email
     session_list = SessionDb.query(SessionDb.user_email == my_email)
     session_detail = []
     for session_id in session_list:
         session_detail.append({"ip_address": session_id.ip_address,
                                "browser": session_id.browser,
-                               "sign_in_time": session_id.Login_time,
-                               "id": session_id.session_ID})
+                               "sign_in_time": session_id.login_time,
+                               "id": session_id.user_session_id })
     return jsonify(session_detail)
 
 
-@app.route("/revoke", methods=["GET", "POST"])
+@app.route("/users/revoke", methods=["GET", "POST"])
 def revoke_other_session():
     if request.method == "POST":
         if "user" in session:
             other_session_id = request.json["id_param"]
 
-            delete_session = SessionDb.query().filter(SessionDb.session_ID == other_session_id).get()
+            delete_session = SessionDb.query().filter(SessionDb.user_session_id == other_session_id).get()
             delete_session.key.delete()
         return "other session deleted"
     return "send a post request"
 
 
-@app.route("/validation", methods=["GET", "POST"])
+@app.route("/user/validation", methods=["GET", "POST"])
 def validate_user():
     error = ''
     if request.method == "POST":
         user_email = request.form["user_email"]
         user_password = request.form["user_password"]
-        user_detail = Registration.query(Registration.Email == user_email).get()
+        user_detail = Registration.query(Registration.email == user_email).get()
 
-        if user_detail and user_detail.Password == user_password:
+        if user_detail and user_detail.password == user_password:
             session_id = str(uuid.uuid4())
             session["user"] = session_id
-            SessionDb(session_ID=session_id,
+            SessionDb(user_session_id=session_id,
                       user_email=user_email,
                       ip_address=request.remote_addr,
                       browser=request.headers.get('User-Agent')).put()
@@ -132,7 +132,7 @@ def homepage(user_email):
     if "user" in session:
         time.sleep(1)
         # a = session_track(user_email)
-        retrieved_post = MessagePost.query(MessagePost.EmailID == user_email).order(-MessagePost.Timestamp)
+        retrieved_post = MessagePost.query(MessagePost.email_id == user_email).order(-MessagePost.timestamp)
         return render_template("simple_post.html", email=user_email, retrieved_post=retrieved_post)
     else:
         return redirect(url_for('logout'))
@@ -144,11 +144,11 @@ def post_page():
 
 
 # logging out and dropping session
-@app.route("/logout", methods=["GET", "POST"])
+@app.route("/user/logout", methods=["GET", "POST"])
 def logout():
     if request.method == "POST":
         user_session_id = session.get("user")
-        delete_user_session = SessionDb.query().filter(SessionDb.session_ID == user_session_id).get()
+        delete_user_session = SessionDb.query().filter(SessionDb.user_session_id == user_session_id).get()
         if delete_user_session:
             delete_user_session.key.delete()
             session.pop("user", None)
@@ -163,10 +163,10 @@ def logout():
 def remove_multiple_session():
     if "user" in session:
         my_session_id = session.get("user")
-        all_session_list = SessionDb.query(SessionDb.session_ID)
+        all_session_list = SessionDb.query(SessionDb.user_session_id)
         for check in all_session_list:
-            if check.session_ID != my_session_id:
-                check.session_ID.key.delete()
+            if check.user_session_id != my_session_id:
+                check.user_session_id.key.delete()
             continue
 
         return True

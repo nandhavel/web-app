@@ -7,54 +7,42 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
     $(document).ready(function(){
-        var str = '';
         $("#session_button").click(function(){
             $.ajax({
-                url: "/active_session",
+                url: "/users/active_session",
                 type: "GET",
                 dataType: "json",
                 success: function(data) {
-
                     $(data).each(function(index, value){
-                        str = ' ';
-                        str +=
-                      ("browser:"+" " + value.browser + "<br>"+
-                        "IP: " + " " + value.ip_address + "<br>"+
-                        "sign_in_time: " + " " + value.sign_in_time + "<br><br>");
-
-                         console.log(str);
-                         console.log(value.id)
-
                          my_button = $('<button/>',
                          { text:"revoke",
-                         id: 'btn_'+index,
-                         onclick: "post_fun('"+value.id+ "', 'div"+ index +"')"
-
-                         });
+                           data_id: value.id
+                         }).addClass("deleteButton")
                          my_div = $('<div id="div'+ index +'" />');
-                         console.log(my_div);
-                         my_div.append(str);
+                         my_div.append('<li>browser:'+value.browser+"<br>"+'ip_address:'+value.ip_address+"<br>"+'sign_in_time:'+value.sign_in_time+"<br>"+'</li>');
                          my_div.append(my_button)
                          $('#display_session').append(my_div);
                     });
                 }
             });
         });
+        $('#display_session').on("click",".deleteButton",function() {
+            post_fun(this);
+        });
     });
-    function post_fun(id_parameter, my_div)
+    function post_fun(but)
     {
-        console.log(id_parameter)
+        var $but = $(but);
         $.ajax({
             type: "POST",
-            url: "/revoke",
+            url: "/users/revoke",
             data: JSON.stringify({
-                    id_param: id_parameter
+                    id_param: $but.attr("data_id")
                 }),
             contentType: 'application/json;charset=UTF-8',
             success: function()
             {
-                console.log(my_div);
-                $("#"+ my_div).remove();
+                $but.closest("div").fadeOut(200);
             }
         });
     }
@@ -99,8 +87,8 @@
 
     {% for post in retrieved_post: %}
     <ul><b>Title and Post</b>
-        <li>{{post.Title}}</li>
-        <li>{{post.MyPost}}</li>
+        <li>{{post.title}}</li>
+        <li>{{post.my_post}}</li>
     </ul>
     {% endfor %}
     <br><br>
@@ -113,33 +101,10 @@
 
   </div>
 
-
-
   <div class="column right" id="display_session" style="background-color:#bbb;">
 
   </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 </body>

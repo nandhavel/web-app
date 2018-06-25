@@ -18,6 +18,12 @@ indexes:
 
 - kind: MessagePost
   properties:
+  - name: email_id
+  - name: timestamp
+    direction: desc
+
+- kind: MessagePost
+  properties:
   - name: user_email_id
   - name: Timestamp
     direction: desc
