@@ -30,7 +30,7 @@ class SessionDb(ndb.Model):
 def user_session_authenticate():
     if "user" not in session:
         return False
-    user_session_id = session["user"]
+    user_session_id = session.get("user")
     session_exist = SessionDb.query().filter(SessionDb.user_session_id == user_session_id).get()
     if session_exist:
         return True
@@ -40,29 +40,24 @@ def user_session_authenticate():
 @app.route("/Posting_message/<email>", methods=["POST"])
 def posting_messsage(email):
     if request.method == "POST":
-        title = request.form["your_title"]
-        mypost = request.form["title"]
+        title = request.form.get("your_title")
+        mypost = request.form.get("title")
         is_valid_session = user_session_authenticate()
         if not is_valid_session:
             return redirect(url_for('logout'))
-
         MessagePost(title=title, my_post=mypost, email_id=email).put()
-    return redirect(url_for("getting_message", email=email))
+        time.sleep(1)
+        retrieved_post = MessagePost.query(MessagePost.email_id == email).order(-MessagePost.timestamp)
+        return render_template("simple_post.html", retrieved_post=retrieved_post,email = email)
 
 
-@app.route("/Getting_message/<email>")
-def getting_message(email):
-    time.sleep(1)
-    retrieved_post = MessagePost.query(MessagePost.email_id == email).order(-MessagePost.timestamp)
-    return render_template("simple_post.html", retrieved_post=retrieved_post)
 
-
-@app.route("/users/register", methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
-        name = request.form["user_name"]
-        email = request.form["user_email"]
-        password = request.form["user_password"]
+        name = request.form.get("user_name")
+        email = request.form.get("user_email")
+        password = request.form.get("user_password")
         user_key = Registration(name=name, email=email, password=password).put()
         return render_template("login_page.html")
     return render_template("Registration_form.html")
@@ -70,36 +65,88 @@ def register():
 
 @app.route("/users/active_session")
 def session_track():
-    my_id = session.get('user')
-    my_email = SessionDb.query().filter(SessionDb.user_session_id == my_id).get().user_email
-    session_list = SessionDb.query(SessionDb.user_email == my_email)
-    session_detail = []
-    for session_id in session_list:
-        session_detail.append({"ip_address": session_id.ip_address,
-                               "browser": session_id.browser,
-                               "sign_in_time": session_id.login_time,
-                               "id": session_id.user_session_id })
-    return jsonify(session_detail)
-
-
-@app.route("/users/revoke", methods=["GET", "POST"])
-def revoke_other_session():
-    if request.method == "POST":
+    try:
         if "user" in session:
-            other_session_id = request.json["id_param"]
+            my_id = session.get('user')
+            my_email = SessionDb.query().filter(SessionDb.user_session_id == my_id).get().user_email
+            logging.info(SessionDb)
+            logging.info(my_email)
+            session_list = SessionDb.query(SessionDb.user_email == my_email)
+            session_detail = []
+            for session_id in session_list:
+                if session_id.user_session_id == my_id:
 
-            delete_session = SessionDb.query().filter(SessionDb.user_session_id == other_session_id).get()
-            delete_session.key.delete()
-        return "other session deleted"
-    return "send a post request"
+                    session_detail.append({"ip_address": session_id.ip_address,
+                                           "browser": session_id.browser,
+                                           "sign_in_time": session_id.login_time,
+                                           "id": session_id.user_session_id,
+                                           "current_session": True})
+                else:
+                    session_detail.append({"ip_address": session_id.ip_address,
+                                           "browser": session_id.browser,
+                                           "sign_in_time": session_id.login_time,
+                                           "id": session_id.user_session_id,
+                                           "current_session": False})
+            return jsonify(session_detail)
+        else:
+            dict1 = {
+                "success": False,
+                "url": url_for('logout')
+            }
+
+            return jsonify(dict1)
+    except AttributeError:
+        dict1 = {
+            "success": False,
+            "url": url_for('logout')
+        }
+
+        return jsonify(dict1)
+
+
+@app.route("/users/revoke", methods=["POST"])
+def revoke_other_session():
+    is_valid_session = user_session_authenticate()
+    logging.info(is_valid_session)
+    if not is_valid_session:
+        dict = {
+            'success': False,
+            'url': url_for('logout')
+        }
+        return jsonify(dict)
+    else:
+        other_session_id = request.json.get("id_param")
+        delete_session = SessionDb.query().filter(SessionDb.user_session_id == other_session_id).get()
+        delete_session.key.delete()
+
+        dict = {
+            'success': True,
+            'message': "other session deleted"
+        }
+        return jsonify(dict)
+
+
+# @app.route('/v1/session/<id_>', methods=['DELETE'])
+# def delete_session(id_):
+#     session_db = SessionDb.get_by_id(id_)
+#     if not session_db:
+#         return jsonify({
+#             'success': False,
+#             'error': 'invalid session id'
+#         })
+#     session_db.key.delete()
+#     return jsonify({
+#         'success': True
+#     })
+
 
 
 @app.route("/user/validation", methods=["GET", "POST"])
 def validate_user():
     error = ''
     if request.method == "POST":
-        user_email = request.form["user_email"]
-        user_password = request.form["user_password"]
+        user_email = request.form.get("user_email")
+        user_password = request.form.get("user_password")
         user_detail = Registration.query(Registration.email == user_email).get()
 
         if user_detail and user_detail.password == user_password:
@@ -120,42 +167,51 @@ def validate_user():
 #  user_login
 @app.route("/", methods=["GET", "POST"])
 def login():
-    if "user" in session:
-        id = session.get("user")
-
-        return render_template("simple_post.html")
-    return render_template("login_page.html")
+    try:
+        if "user" in session:
+            id = session.get("user")
+            user_email = SessionDb.query().filter(SessionDb.user_session_id == id).get().user_email
+            return redirect(url_for("homepage", user_email = user_email))
+        return render_template("login_page.html")
+    except AttributeError:
+        return redirect(url_for('logout'))
 
 
 @app.route("/home/<user_email>/")
 def homepage(user_email):
-    if "user" in session:
-        time.sleep(1)
-        # a = session_track(user_email)
-        retrieved_post = MessagePost.query(MessagePost.email_id == user_email).order(-MessagePost.timestamp)
-        return render_template("simple_post.html", email=user_email, retrieved_post=retrieved_post)
-    else:
+    try:
+        if "user" in session:
+            id = session.get("user")
+            time.sleep(1)
+            user_session = SessionDb.query().filter(SessionDb.user_session_id == id).get().user_session_id
+            logging.info(user_session)
+            if user_session:
+                time.sleep(1)
+                retrieved_post = MessagePost.query(MessagePost.email_id == user_email).order(-MessagePost.timestamp)
+                return render_template("simple_post.html", email=user_email, retrieved_post=retrieved_post)
+            else:
+                return redirect(url_for("logout"))
+        else:
+            return redirect(url_for('logout'))
+    except AttributeError:
         return redirect(url_for('logout'))
-
-
-@app.route("/post")
-def post_page():
-    return render_template("simple_post.html")
 
 
 # logging out and dropping session
 @app.route("/user/logout", methods=["GET", "POST"])
 def logout():
     if request.method == "POST":
-        user_session_id = session.get("user")
-        delete_user_session = SessionDb.query().filter(SessionDb.user_session_id == user_session_id).get()
-        if delete_user_session:
-            delete_user_session.key.delete()
-            session.pop("user", None)
-            return render_template("login_page.html")
-        else:
-            return render_template("login_page.html")
 
+        if "user" in session:
+            user_session_id = session.get("user")
+            delete_user_session = SessionDb.query().filter(SessionDb.user_session_id == user_session_id).get()
+            if delete_user_session:
+                delete_user_session.key.delete()
+                session.pop("user", None)
+                return render_template("login_page.html")
+            else:
+                return render_template("login_page.html")
+        return render_template("login_page.html")
     return render_template("login_page.html")
 
 

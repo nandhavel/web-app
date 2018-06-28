@@ -6,46 +6,71 @@
     <!--<script src="/static/dialog.js"></script>-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script>
-    $(document).ready(function(){
-        $("#session_button").click(function(){
-            $.ajax({
-                url: "/users/active_session",
-                type: "GET",
-                dataType: "json",
-                success: function(data) {
-                    $(data).each(function(index, value){
-                         my_button = $('<button/>',
-                         { text:"revoke",
-                           data_id: value.id
-                         }).addClass("deleteButton")
-                         my_div = $('<div id="div'+ index +'" />');
-                         my_div.append('<li>browser:'+value.browser+"<br>"+'ip_address:'+value.ip_address+"<br>"+'sign_in_time:'+value.sign_in_time+"<br>"+'</li>');
-                         my_div.append(my_button)
-                         $('#display_session').append(my_div);
-                    });
-                }
+        $(document).ready(function(){
+            $("#session_button").click(function(){
+                $.ajax({
+                    url: "/users/active_session",
+                    type: "GET",
+                    dataType: "json",
+                    success: function(data)
+                    {
+                        if(data.success == false){
+                            window.location="/user/logout";
+                        }
+                        else
+                        {
+                            console.log(data)
+                            $(data).each(function(index, value){
+                                if (value.current_session != true){
+
+                                    my_button = $('<button/>',
+                                    { text:"revoke",
+                                    data_id: value.id
+                                    }).addClass("deleteButton")
+                                     my_div = $('<div id="div'+ index +'" />');
+                                     my_div.append('<li>browser:'+value.browser+"<br>"+'ip_address:'+value.ip_address+"<br>"+'sign_in_time:'+value.sign_in_time+"<br><br>"+'</li>');
+                                     my_div.append(my_button)
+                                     $('#display_session').append(my_div);
+
+                                }
+                                else{
+                                    my_div = $('<div id="div'+ index +'" />');
+                                    my_div.append('<li>browser:'+value.browser+"<br>"+'ip_address:'+value.ip_address+"<br>"+'sign_in_time:'+value.sign_in_time+"<br><br>"+'</li>')
+                                    $('#display_session').append(my_div);
+
+                                }
+                            });
+
+                        }
+
+
+                    }
+                });
+            });
+            $('#display_session').on("click",".deleteButton",function() {
+                post_fun(this);
             });
         });
-        $('#display_session').on("click",".deleteButton",function() {
-            post_fun(this);
-        });
-    });
-    function post_fun(but)
-    {
-        var $but = $(but);
-        $.ajax({
-            type: "POST",
-            url: "/users/revoke",
-            data: JSON.stringify({
-                    id_param: $but.attr("data_id")
-                }),
-            contentType: 'application/json;charset=UTF-8',
-            success: function()
-            {
-                $but.closest("div").fadeOut(200);
-            }
-        });
-    }
+        function post_fun(but)
+        {
+            var $but = $(but);
+            $.ajax({
+                type: "POST",
+                url: "/users/revoke",
+                data: JSON.stringify({
+                        id_param: $but.attr("data_id")
+                    }),
+                contentType: 'application/json;charset=UTF-8',
+                success: function(data)
+                {
+                    console.log(data);
+                    if(data.success == false){
+                        window.location="/user/logout";
+                    }
+                    $but.closest("div").fadeOut(200);
+                }
+            });
+        }
     </script>
     <link rel="stylesheet" type="text/css" href="/static/style.css?v=1.88817">
 </head>
